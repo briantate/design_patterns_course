@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------
+# Zephyr and West build artifacts
+# ---------------------------------------------------------------------
+build/
+build-*/
+*.log
+*.pyc
+*.pyo
+*.pdb
+__pycache__/
+.cache/
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+cmake_install.cmake
+compile_commands.json
+zephyr/
+modules/
+twister-out/
+
+# ---------------------------------------------------------------------
+# Generated files
+# ---------------------------------------------------------------------
+*.bin
+*.hex
+*.elf
+*.map
+*.lst
+*.d
+*.o
+
+# ---------------------------------------------------------------------
+# IDE / Editor specific
+# ---------------------------------------------------------------------
+# VSCode
+.vscode/
+.vscode-test/
+.settings/
+*.code-workspace
+
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# macOS / Windows filesystem junk
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------------
+# Python virtual environments
+# ---------------------------------------------------------------------
+venv/
+.env/
+.venv/
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build_py/
+
+# ---------------------------------------------------------------------
+# Zephyr project workspace caches
+# ---------------------------------------------------------------------
+.west/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# ---------------------------------------------------------------------
+# Optional: if you store SDK or toolchain locally (recommended to exclude)
+# ---------------------------------------------------------------------
+zephyr-sdk-*/
+toolchain/
