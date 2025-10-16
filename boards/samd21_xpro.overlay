@@ -1,0 +1,22 @@
+/ {
+    aliases {
+        led1 = &ext_led;
+        sw0 = &user_button;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        ext_led: led_1 {
+            gpios = <&portb 02 GPIO_ACTIVE_HIGH>;
+            label = "EXT_LED";
+        };
+    };
+    buttons {
+        compatible = "gpio-keys";
+        user_button: button_0 {
+            gpios = <&porta 15 GPIO_ACTIVE_LOW>;
+            label = "USER_BUTTON";
+        };
+    };
+};
+
