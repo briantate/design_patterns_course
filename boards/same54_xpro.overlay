@@ -2,6 +2,7 @@
     aliases {
         led1 = &ext_led;
         sw0 = &user_button;
+        pwm0 = &tc4;
     };
 
     leds {
@@ -14,29 +15,28 @@
     buttons {
         compatible = "gpio-keys";
         user_button: button_0 {
-            gpios = <&porta 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+            gpios = <&portc 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
             label = "USER_BUTTON";
         };
     };
 };
 
 &pinctrl {
-    tc6_pb02: tc6_pb02 {
-        atmel,pins = <1 2 5 0>; // Port B, Pin 2, Peripheral E, No pull
+    tc4_pb08: tc4_pb08 {
+        atmel,pins = <1 8 5 0>; // Port B, Pin 8, Peripheral E, No pull
     };
-    tc6_pb03: tc6_pb03 {
-        atmel,pins = <1 3 5 0>; // Port B, Pin 3, Peripheral E, No pull
+    tc4_pb09: tc4_pb09 {
+        atmel,pins = <1 9 5 0>; // Port B, Pin 9, Peripheral E, No pull
     };
 };
 
-&tc6 {
+&tc4 {
     status = "okay";
     compatible = "atmel,sam0-tc-pwm";
     #pwm-cells = <2>;
-    pinctrl-0 = <&tc6_pb02 &tc6_pb03>;
+    pinctrl-0 = <&tc4_pb08 &tc4_pb09>;
     pinctrl-names = "default";
     channels = <2>;
     counter-size = <16>;
     prescaler = <1>;
 };
-
