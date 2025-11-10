@@ -28,6 +28,17 @@
     tc4_pb09: tc4_pb09 {
         atmel,pins = <1 9 4 0>; // Port B, Pin 9, Peripheral E, No pull
     };
+    adc1_default: adc1_default{
+        group1{
+            pinmux = <PB4B_ADC1_AIN6>;
+        };
+    };
+};
+
+&adc1 {
+    status = "okay";
+    pinctrl-0 =  <&adc1_default>;
+    pinctrl-names = "default";
 };
 
 &tc4 {
