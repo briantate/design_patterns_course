@@ -2,7 +2,7 @@
     aliases {
         led1 = &ext_led;
         sw0 = &user_button;
-        pwm0 = &tc4;
+        pwm0 = &tcc0;
     };
 
     leds {
@@ -33,6 +33,11 @@
             pinmux = <PB4B_ADC1_AIN6>;
         };
     };
+    pwm_ext2: pwm_ext2 {
+        group1{
+            pinmux = <PC4F_TCC0_WO0>;
+        };
+    };
 };
 
 &adc1 {
@@ -41,13 +46,17 @@
     pinctrl-names = "default";
 };
 
-&tc4 {
-    status = "okay";
-    compatible = "atmel,sam0-tc-pwm";
-    #pwm-cells = <2>;
-    pinctrl-0 = <&tc4_pb08 &tc4_pb09>;
-    pinctrl-names = "default";
-    channels = <2>;
-    counter-size = <16>;
-    prescaler = <1>;
+&tcc0 {
+    pinctrl-0 = <&pwm_ext2>;
 };
+
+//&tc4 {
+//    status = "okay";
+//    compatible = "atmel,sam0-tc-pwm";
+//    #pwm-cells = <2>;
+//    pinctrl-0 = <&tc4_pb08 &tc4_pb09>;
+//    pinctrl-names = "default";
+//    channels = <2>;
+//    counter-size = <16>;
+//    prescaler = <1>;
+//};
