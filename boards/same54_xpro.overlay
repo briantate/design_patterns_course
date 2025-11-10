@@ -3,6 +3,7 @@
         led1 = &ext_led;
         sw0 = &user_button;
         pwm0 = &tcc0;
+        pwm1 = &tc4;
     };
 
     leds {
@@ -50,13 +51,13 @@
     pinctrl-0 = <&pwm_ext2>;
 };
 
-//&tc4 {
-//    status = "okay";
-//    compatible = "atmel,sam0-tc-pwm";
-//    #pwm-cells = <2>;
-//    pinctrl-0 = <&tc4_pb08 &tc4_pb09>;
-//    pinctrl-names = "default";
-//    channels = <2>;
-//    counter-size = <16>;
-//    prescaler = <1>;
-//};
+&tc4 {
+    status = "okay";
+    compatible = "atmel,sam0-tc-pwm";
+    #pwm-cells = <2>;
+    pinctrl-0 = <&tc4_pb08>;
+    pinctrl-names = "default";
+    channels = <2>;
+    counter-size = <16>;
+    prescaler = <1>;
+};
