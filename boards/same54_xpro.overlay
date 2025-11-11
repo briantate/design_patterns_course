@@ -3,7 +3,7 @@
         led1 = &ext_led;
         sw0 = &user_button;
         pwm0 = &tcc0;
-        pwm1 = &tc4;
+        servo0= &tcc4;
     };
 
     leds {
@@ -39,6 +39,11 @@
             pinmux = <PC4F_TCC0_WO0>;
         };
     };
+    servo_pins: servo_pins{
+        group1{
+            pinmux = <PB14F_TCC4_WO0>, <PB15F_TCC4_WO1>;
+        };
+    };
 };
 
 &adc1 {
@@ -51,13 +56,22 @@
     pinctrl-0 = <&pwm_ext2>;
 };
 
-&tc4 {
+&tcc4 {
     status = "okay";
-    compatible = "atmel,sam0-tc-pwm";
-    #pwm-cells = <2>;
-    pinctrl-0 = <&tc4_pb08>;
+    compatible = "atmel,sam0-tcc-pwm";
+    prescaler = <8>;
+	#pwm-cells = <2>;
+    pinctrl-0 = <&servo_pins>;
     pinctrl-names = "default";
-    channels = <2>;
-    counter-size = <16>;
-    prescaler = <1>;
 };
+
+// &tc4 {
+//     status = "okay";
+//     compatible = "atmel,sam0-tc-pwm";
+//     #pwm-cells = <2>;
+//     pinctrl-0 = <&tc4_pb08>;
+//     pinctrl-names = "default";
+//     channels = <2>;
+//     counter-size = <16>;
+//     prescaler = <1>;
+// };
