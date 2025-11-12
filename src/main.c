@@ -3,8 +3,17 @@
 #include <zephyr/sys/printk.h>
 #include <zephyr/drivers/pwm.h>
 
-#define PWM0_NODE DT_ALIAS(pwm0)
-#define PWM_PERIOD_USEC 20000U  // 20 ms period (50 Hz)
+#define STEP PWM_USEC(100)
+
+enum direction {
+	DOWN,
+	UP,
+};
+
+static const struct pwm_dt_spec servo_left = PWM_DT_SPEC_GET(DT_NODELABEL(servo_left));
+static const struct pwm_dt_spec servo_right = PWM_DT_SPEC_GET(DT_NODELABEL(servo_right));
+static const uint32_t min_pulse = DT_PROP(DT_NODELABEL(servo_left), min_pulse);
+static const uint32_t max_pulse = DT_PROP(DT_NODELABEL(servo_left), max_pulse);
 
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
 static const struct gpio_dt_spec led1 = GPIO_DT_SPEC_GET(DT_ALIAS(led1), gpios);
@@ -21,17 +30,23 @@ void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t
 
 int main(void)
 {
-    int ret;
+    int ret = 0;
+    uint32_t pulse_width_left = min_pulse;
+    uint32_t pulse_width_right = max_pulse;
+	enum direction dir = UP;
 
-    const struct device *pwm_dev = DEVICE_DT_GET(PWM0_NODE);
+	printk("Servomotor control\n");
 
-    if (!device_is_ready(pwm_dev)) {
-        printk("Error: PWM device not ready\n");
-        ret = -1;
-    }
-
-    uint32_t pulse_channel_0 = PWM_PERIOD_USEC / 4; // 25% duty cycle
-    uint32_t pulse_channel_1 = PWM_PERIOD_USEC / 2; // 50% duty cycle
+	if (!pwm_is_ready_dt(&servo_left)) {
+		printk("Error: PWM device %s is not ready\n",
+		       servo_left.dev->name);
+		return 0;
+	}
+	if (!pwm_is_ready_dt(&servo_right)) {
+		printk("Error: PWM device %s is not ready\n",
+		       servo_right.dev->name);
+		return 0;
+	}
 
     if (!device_is_ready(led.port)) {
         printk("Error: LED device %s is not ready\n", led.port->name);
@@ -71,13 +86,50 @@ int main(void)
 
     printk("Button-LED example running on %s\n", CONFIG_BOARD);
 
-    ret = pwm_set(pwm_dev, 0, PWM_PERIOD_USEC, pulse_channel_0, 0);
-    printk("pwm_set channel 0 ret=%d\n", ret);
-    ret = pwm_set(pwm_dev, 1, PWM_PERIOD_USEC, pulse_channel_1, 0);
-    printk("pwm_set channel 1 ret=%d\n", ret);
-
     while (1) {
         gpio_pin_toggle_dt(&led);
+        ret = pwm_set_pulse_dt(&servo_left, pulse_width_left);
+
+        if (ret < 0) {
+			printk("Error %d: failed to set pulse width left\n", ret);
+			return 0;
+		}
+
+        ret = pwm_set_pulse_dt(&servo_right, pulse_width_right);
+		if (ret < 0) {
+			printk("Error %d: failed to set pulse width right\n", ret);
+			return 0;
+		}
+
+		if (dir == DOWN) {
+			if (pulse_width_left <= min_pulse) {
+				dir = UP;
+				pulse_width_left = min_pulse;
+			} else {
+				pulse_width_left -= STEP;
+			}
+
+            pulse_width_right += STEP;
+
+			if (pulse_width_right >= max_pulse) {
+				dir = DOWN;
+				pulse_width_right = max_pulse;
+			}
+		} else {
+			pulse_width_left += STEP;
+
+			if (pulse_width_left >= max_pulse) {
+				dir = DOWN;
+				pulse_width_left = max_pulse;
+			}
+
+            if (pulse_width_right <= min_pulse) {
+				dir = UP;
+				pulse_width_right = min_pulse;
+			} else {
+				pulse_width_right -= STEP;
+			}
+		}
         k_msleep(500); /* toggle every 500 ms */
     }
     return ret;
