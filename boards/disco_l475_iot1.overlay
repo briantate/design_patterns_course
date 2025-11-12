@@ -1,0 +1,20 @@
+/ {
+    aliases {
+        led1 = &ext_led;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        /* External LED on PA5 (Arduino D13 pin) */
+        ext_led: led_1 {
+            gpios = <&gpioa 5 GPIO_ACTIVE_HIGH>;
+            label = "EXT_LED";
+        };
+    };
+};
+
+&pwm2 {
+    status = "okay";
+};
+
